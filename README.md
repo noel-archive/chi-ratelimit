@@ -4,6 +4,11 @@
 ## What is this?
 **chi-ratelimit** is middleware to implement production-safe ratelimiting into your [go-chi](https://github.com/go-chi/chi) applications.
 
+## Providers
+- In-memory
+- [Redis](https://redis.io)
+- [etcd](https://etcd.io)
+
 ## Example
 ```go
 package main
