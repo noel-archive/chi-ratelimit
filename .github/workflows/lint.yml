@@ -46,16 +46,6 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     services:
-      etcd:
-        image: bitnami/etcd:latest
-        env:
-          ALLOW_NONE_AUTHENTICATION: 'yes'
-        options: >-
-          --health-cmd "sh -c /opt/bitnami/scripts/etcd/healthcheck.sh"
-          --health-interval 10s
-          --health-timeout 20s
-          --health-retries 5
-
       redis:
         image: redis
         options: >-

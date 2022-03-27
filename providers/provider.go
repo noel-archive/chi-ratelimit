@@ -31,9 +31,6 @@ type Provider interface {
 	// the types.Ratelimit object for the key provided.
 	Reset(key string) (bool, error)
 
-	// Close closes this Provider if needed.
-	Close() error
-
 	// Name returns the Provider name.
 	Name() string
 

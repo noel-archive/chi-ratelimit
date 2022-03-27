@@ -25,7 +25,6 @@
 package inmemory
 
 import (
-	"fmt"
 	"github.com/noelware/chi-ratelimit/providers"
 	"github.com/noelware/chi-ratelimit/types"
 )
@@ -42,13 +41,9 @@ func NewProvider() providers.Provider {
 
 func (p *Provider) Reset(key string) (bool, error) {
 	// Check if the object exists
-	var ratelimit *types.Ratelimit = nil
-
-	for k, val := range p.data {
-		if key == k {
-			ratelimit = val
-			break
-		}
+	ratelimit, ok := p.data[key]
+	if !ok {
+		return false, nil
 	}
 
 	if ratelimit == nil {
@@ -62,34 +57,19 @@ func (p *Provider) Reset(key string) (bool, error) {
 	return true, nil
 }
 
-func (*Provider) Close() error {
-	return nil
-}
-
 func (*Provider) Name() string {
 	return "in-memory provider"
 }
 
 func (p *Provider) Put(key string, value *types.Ratelimit) error {
-	// Check if it exists
-	for k, _ := range p.data {
-		if key == k {
-			return fmt.Errorf("ratelimit with key %s already exists", k)
-		}
-	}
-
-	// Add it onto memory
 	p.data[key] = value
 	return nil
 }
 
 func (p *Provider) Get(key string) (*types.Ratelimit, error) {
-	var ratelimit *types.Ratelimit
-	for k, val := range p.data {
-		if key == k {
-			ratelimit = val
-			break
-		}
+	ratelimit, ok := p.data[key]
+	if !ok {
+		return nil, nil
 	}
 
 	if ratelimit == nil {
@@ -98,9 +78,7 @@ func (p *Provider) Get(key string) (*types.Ratelimit, error) {
 
 	// Update the inner map with the new ratelimit
 	copied := ratelimit.Copy()
-	data := p.data
-	data[key] = copied
+	_ = p.Put(key, copied)
 
-	p.data = data
 	return copied, nil
 }

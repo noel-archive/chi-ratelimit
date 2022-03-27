@@ -6,31 +6,12 @@
 
 ## Providers
 - In-memory
-- [Redis](https://redis.io)
-- [etcd](https://etcd.io)
+- [Redis](https://redis.io) under [`chi-ratelimit/redis`](https://github.com/Noelware/chi-ratelimit-redis)
+- [etcd](https://etcd.io) under [`chi-ratelimit/etcd`](https://github.com/Noelware/chi-ratelimit-etcd)
 
-## Example
-```go
-package main
-
-import (
-  "github.com/go-chi/chi/v5"
-  "github.com/Noelware/chi-ratelimit"
-  "github.com/Noelware/chi-ratelimit/redis"
-  "fmt"
-)
-
-func main() {
-  ratelimiter := ratelimit.NewRatelimiter(
-    ratelimit.WithStorage(redis.New().WithClient(<redis client here>)),
-    ratelimit.WithDefaultTime(func() time.Time { time.Now().Add(1 * time.Hour) }),
-  )
-  
-  router := chi.NewRouter()
-  router.Use(ratelimiter)
-  
-  http.ListenAndServe(":3000", router)
-}
+## How to use?
+```shell
+$ go get github.com/noelware/chi-ratelimit
 ```
 
 ## License
