@@ -24,13 +24,15 @@
 package ratelimit
 
 import (
-	"github.com/noelware/chi-ratelimit/providers"
-	"github.com/noelware/chi-ratelimit/providers/inmemory"
 	"net"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/noelware/chi-ratelimit/providers"
+	"github.com/noelware/chi-ratelimit/providers/inmemory"
+	"github.com/noelware/chi-ratelimit/types"
 )
 
 // ~ ratelimiter options ~ \\
@@ -173,6 +175,14 @@ func (r *Ratelimiter) Middleware(next http.Handler) http.Handler {
 		key := r.keyFunc(w, req)
 		rl, err := r.provider.Get(key)
 		headers := w.Header()
+
+		if rl != nil {
+			rl = types.NewRatelimit(
+				int32(r.defaultLimit),
+				isGlobal,
+				time.Now().Add(r.defaultTimeWindow),
+			)
+		}
 
 		// TODO: add a option to call on error handling?
 		if err != nil {
