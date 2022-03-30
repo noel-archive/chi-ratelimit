@@ -182,6 +182,8 @@ func (r *Ratelimiter) Middleware(next http.Handler) http.Handler {
 				isGlobal,
 				time.Now().Add(r.defaultTimeWindow),
 			)
+
+			r.provider.Put(key, rl)
 		}
 
 		// TODO: add a option to call on error handling?
