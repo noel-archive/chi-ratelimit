@@ -176,14 +176,17 @@ func (r *Ratelimiter) Middleware(next http.Handler) http.Handler {
 		rl, err := r.provider.Get(key)
 		headers := w.Header()
 
-		if rl != nil {
+		if rl == nil {
 			rl = types.NewRatelimit(
 				int32(r.defaultLimit),
 				isGlobal,
 				time.Now().Add(r.defaultTimeWindow),
 			)
 
-			r.provider.Put(key, rl)
+			err = r.provider.Put(key, rl)
+			if err != nil { // TODO: add option for error handling?
+				panic(err)	
+			}
 		}
 
 		// TODO: add a option to call on error handling?
